@@ -60,27 +60,18 @@ func TestQueryAllContractState(t *testing.T) {
 		"with pagination offset": {
 			srcQuery: &types.QueryAllContractStateRequest{
 				Address: contractAddr.String(),
-				Pagination: &query.PageRequest{
-					Offset: 1,
-				},
 			},
 			expErr: errLegacyPaginationUnsupported,
 		},
 		"with pagination count": {
 			srcQuery: &types.QueryAllContractStateRequest{
 				Address: contractAddr.String(),
-				Pagination: &query.PageRequest{
-					CountTotal: true,
-				},
 			},
 			expErr: errLegacyPaginationUnsupported,
 		},
 		"with pagination limit": {
 			srcQuery: &types.QueryAllContractStateRequest{
 				Address: contractAddr.String(),
-				Pagination: &query.PageRequest{
-					Limit: 1,
-				},
 			},
 			expModelContains: []types.Model{
 				{Key: []byte{0x0, 0x1}, Value: []byte(`{"count":8}`)},
@@ -92,9 +83,6 @@ func TestQueryAllContractState(t *testing.T) {
 		"with pagination next key": {
 			srcQuery: &types.QueryAllContractStateRequest{
 				Address: contractAddr.String(),
-				Pagination: &query.PageRequest{
-					Key: fromBase64("Y29uZmln"),
-				},
 			},
 			expModelContains: []types.Model{
 				{Key: []byte("foo"), Value: []byte(`"bar"`)},

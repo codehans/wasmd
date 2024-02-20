@@ -129,10 +129,6 @@ func (q GrpcQuerier) AllContractState(c context.Context, req *types.QueryAllCont
 	if err != nil {
 		return nil, err
 	}
-	paginationParams, err := ensurePaginationParams(req.Pagination)
-	if err != nil {
-		return nil, err
-	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	if !q.keeper.HasContractInfo(ctx, contractAddr) {
@@ -142,6 +138,10 @@ func (q GrpcQuerier) AllContractState(c context.Context, req *types.QueryAllCont
 
 	r := make([]types.Model, 0)
 	prefixStore := prefix.NewStore(ctx.KVStore(q.storeKey), types.GetContractStorePrefix(contractAddr))
+	paginationParams := &query.PageRequest{
+		Key:   nil,
+		Limit: query.MaxLimit,
+	}
 	pageRes, err := query.FilteredPaginate(prefixStore, paginationParams, func(key, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
 			r = append(r, types.Model{
